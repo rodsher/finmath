@@ -1,7 +1,9 @@
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
 // import "core-js/fn/array.find"
 
-export default class Math {
+import { ArgumentIsGreaterThanMaxError, ArgumentIsLessThanMinError } from './exceptions'
+
+export class Math {
   private leftOperand: number
   private rightOperand!: number
 
@@ -12,6 +14,14 @@ export default class Math {
   }
 
   static fromNumber(num: number): Math {
+    if (num > Number.MAX_SAFE_INTEGER) {
+      throw new ArgumentIsGreaterThanMaxError(num)
+    }
+
+    if (num < Number.MIN_SAFE_INTEGER) {
+      throw new ArgumentIsLessThanMinError(num)
+    }
+
     return new Math(num)
   }
 
@@ -31,7 +41,7 @@ export default class Math {
   // toString()
   // toPrecision()
 
-  // add()
+  // add() {}
   // sub()
   // mul()
   // div()
