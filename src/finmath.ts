@@ -1,5 +1,13 @@
+/**
+ * This is a main library file that containts a primary class Math.
+ *
+ * @fileoverview
+ */
+
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
 // import "core-js/fn/array.find"
+
+/* tslint:disable:unified-signatures */
 
 import { ArgumentIsGreaterThanMaxError, ArgumentIsLessThanMinError } from './exceptions'
 
@@ -7,6 +15,7 @@ export class Math {
   private leftOperand: number
   private rightOperand!: number
 
+  constructor()
   constructor(num: number)
   constructor(num?: number) {
     this.leftOperand = num ?? 0
