@@ -7,7 +7,6 @@ export class Math {
   private leftOperand: number
   private rightOperand!: number
 
-  constructor()
   constructor(num: number)
   constructor(num?: number) {
     this.leftOperand = num ?? 0
@@ -40,9 +39,14 @@ export class Math {
   // trunc()
   // toString()
   // toPrecision()
+  // result()
 
   // add() {}
   // sub()
   // mul()
   // div()
+
+  // classes:
+  // - NumberPrecision
+  // - NumberValidator
 }
