@@ -64,6 +64,38 @@ describe('Math', () => {
           .result()
       ).toBe(0.3)
     })
+
+    it.each([
+      [0, 0, 0],
+      [0.0, 0, 0.0],
+      [0, 0.0, 0.0],
+      [0.0, 0.0, 0.0],
+      [0.1, 0.2, 0.3],
+      [0.00005, 0.00007, 0.00012]
+    ])('add(%d, %d) = %d', (firstInput, secondInput, expected) => {
+      expect(
+        math
+          .fromNumber(firstInput)
+          .add(secondInput)
+          .result()
+      ).toBe(expected)
+    })
+  })
+
+  describe('mul', () => {
+    it.each([
+      [0.375, 0.0000125, 0.0000046875],
+      [0.0007, 0.0006, 0.00000042],
+      [0.00093, 0.003, 0.00000279],
+      [100.502, 10.1, 1015.0702]
+    ])('mul(%d, %d) = %d', (firstInput, secondInput, expected) => {
+      expect(
+        math
+          .fromNumber(firstInput)
+          .mul(secondInput)
+          .result()
+      ).toBe(expected)
+    })
   })
 
   /*
