@@ -36,22 +36,6 @@ export class FinMath {
     return new FinMath(num)
   }
 
-  // static fromString(num: string): Finmath
-
-  // randomFloat()
-  // randomBetween()
-  // randomInt()
-  // randomIntBetween()
-  // round()
-  // floor()
-  // sign()
-  // pow(x, y)
-  // max()
-  // min()
-  // trunc()
-  // toString()
-  // toPrecision()
-
   add(num: number): FinMath
   add(num: string): FinMath
   add(num: number | string): FinMath {
@@ -69,16 +53,7 @@ export class FinMath {
     return this
   }
 
-  // sub()
-  // mul()
-  // div()
-
   result(): number {
     return this.leftOperand
   }
-
-  // classes:
-  // - NumberPrecision
-  // - NumberValidator
-  // - NumberFormatter (padWithZero)
 }
