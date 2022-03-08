@@ -1,5 +1,7 @@
 /**
- * File contains exceptions that library can throw.
+ * The file contains public and private exceptions that the library can throw.
+ * All exceptions that can be caught in a client code contains the `@public` annotation in the JSDoc.
+ * Code coverage disabled for this file because it does not contain conditional logic or branches.
  *
  * @fileoverview
  */
