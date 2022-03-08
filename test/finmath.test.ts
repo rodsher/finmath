@@ -77,4 +77,86 @@ describe('Math', () => {
   })
 
   */
+
+  describe('result', () => {
+    it('should return result after a single operation', () => {
+      expect(
+        math
+          .fromNumber(0)
+          .add(100.0)
+          .result()
+      ).toBe(100.0)
+    })
+
+    it('should return result after a double operation', () => {
+      expect(
+        math
+          .fromNumber(0)
+          .add(100.25)
+          .add(100.25)
+          .result()
+      ).toBe(200.5)
+    })
+
+    it('should return result after a triple operation', () => {
+      expect(
+        math
+          .fromNumber(0)
+          .add(100.25)
+          .add(100.25)
+          .add(100.25)
+          .result()
+      ).toBe(300.75)
+    })
+
+    it('should return default value when operations never called', () => {
+      expect(new math().result()).toBe(0)
+    })
+
+    it('should return left operand when result requested after initialization', () => {
+      expect(math.fromNumber(100).result()).toBe(100)
+      expect(math.fromNumber(100.25).result()).toBe(100.25)
+    })
+  })
+
+  describe('resultAsString', () => {
+    it('should return result after a single operation', () => {
+      expect(
+        math
+          .fromNumber(0)
+          .add(100.25)
+          .resultAsString()
+      ).toBe('100.25')
+    })
+
+    it('should return result after a double operation', () => {
+      expect(
+        math
+          .fromNumber(0)
+          .add(100.25)
+          .add(100.25)
+          .resultAsString()
+      ).toBe('200.5')
+    })
+
+    it('should return result after a triple operation', () => {
+      expect(
+        math
+          .fromNumber(0)
+          .add(100.25)
+          .add(100.25)
+          .add(100.25)
+          .resultAsString()
+      ).toBe('300.75')
+    })
+
+    it('should return default value when operations never called', () => {
+      expect(new math().resultAsString()).toBe('0')
+    })
+
+    it('should return left operand when result requested after initialization', () => {
+      expect(math.fromNumber(100).resultAsString()).toBe('100')
+      expect(math.fromNumber(100.25).resultAsString()).toBe('100.25')
+    })
+  })
 })
