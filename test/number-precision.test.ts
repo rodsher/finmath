@@ -1,10 +1,10 @@
-import { NumberPricision } from '../src/number-precision'
+import { NumberPrecision } from '../src/number-precision'
 
 describe('NumberPrecision', () => {
-  let precision: NumberPricision
+  let precision: NumberPrecision
 
   beforeAll(() => {
-    precision = new NumberPricision()
+    precision = new NumberPrecision()
   })
 
   describe('getPrecision', () => {
@@ -102,6 +102,40 @@ describe('NumberPrecision', () => {
           expect(precision.getPrecision(input)).toBe(expected)
         }
       )
+    })
+  })
+
+  describe('setSamePrecision', () => {
+    it('should return two operands with a same precision that earlier have a different precision', () => {
+      expect(precision.setSamePrecision(1.5, 2.175)).toEqual(['1.500', '2.175', 3])
+      expect(precision.setSamePrecision(1.00005025, 2.0)).toEqual(['1.00005025', '2.00000000', 8])
+    })
+
+    it('should return two operands with a same precision that earlier have a same precision', () => {
+      expect(precision.setSamePrecision(1.125, 2.125)).toEqual(['1.125', '2.125', 3])
+    })
+  })
+
+  describe('padWithZeros', () => {
+    it.each([
+      [['100', 0], '100'],
+      [['100', 1], '100.0'],
+      [['100', 2], '100.00'],
+      [['100', 3], '100.000'],
+      [['100', 4], '100.0000'],
+      [['100', 5], '100.00000'],
+      [['100', 6], '100.000000'],
+      [['100', 7], '100.0000000'],
+      [['100', 8], '100.00000000'],
+      [['100', 9], '100.000000000'],
+      [['100', 10], '100.0000000000'],
+      [['100', 11], '100.00000000000'],
+      [['100', 12], '100.000000000000'],
+      [['100', 13], '100.0000000000000'],
+      [['100', 14], '100.00000000000000'],
+      [['100', 15], '100.000000000000000']
+    ])('padWithZero(%s, %s)', ([input, inputPrecision], expected) => {
+      expect(precision.padWithZeros(input, inputPrecision)).toBe(expected)
     })
   })
 })
