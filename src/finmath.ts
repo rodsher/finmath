@@ -41,15 +41,35 @@ export class FinMath {
   add(num: number | string): FinMath {
     this.rightOperand = Number(num)
 
-    const [left, right, precision] = this.precision.setSamePrecision(
-      this.leftOperand,
-      this.rightOperand
-    )
-    const pow = 10 ** precision
-    const leftOperand = Number(left) * pow
-    const rightOperand = Number(right) * pow
+    const leftPrecision = this.precision.getPrecision(this.leftOperand)
+    const rightPrecision = this.precision.getPrecision(this.rightOperand)
+    const maxPrecision = Math.max(leftPrecision, rightPrecision)
 
-    this.leftOperand = Number(BigInt(leftOperand) + BigInt(rightOperand)) / pow
+    const multiplier = 10 ** maxPrecision
+
+    // Describe a problem about 6.999999999999999 and ways how to avoid it
+    const leftOperand = Math.round(this.leftOperand * multiplier)
+    const rightOperand = Math.round(this.rightOperand * multiplier)
+
+    this.leftOperand = Number(BigInt(leftOperand) + BigInt(rightOperand)) / multiplier
+
+    return this
+  }
+
+  mul(num: number | string): FinMath {
+    this.rightOperand = Number(num)
+
+    const leftPrecision = this.precision.getPrecision(this.leftOperand)
+    const rightPrecision = this.precision.getPrecision(this.rightOperand)
+    const maxPrecision = Math.max(leftPrecision, rightPrecision)
+
+    const multiplier = 10 ** maxPrecision
+    const leftOperand = Math.round(this.leftOperand * multiplier)
+    const rightOperand = Math.round(this.rightOperand * multiplier)
+
+    const r = BigInt(leftOperand) * BigInt(rightOperand)
+
+    this.leftOperand = Number(r) / multiplier ** 2
 
     return this
   }
