@@ -45,10 +45,11 @@ export class FinMath {
       this.leftOperand,
       this.rightOperand
     )
-    const l = Number(left) * 10 ** precision
-    const r = Number(right) * 10 ** precision
+    const pow = 10 ** precision
+    const leftOperand = Number(left) * pow
+    const rightOperand = Number(right) * pow
 
-    this.leftOperand = Number(BigInt(l) + BigInt(r)) / 10 ** precision
+    this.leftOperand = Number(BigInt(leftOperand) + BigInt(rightOperand)) / pow
 
     return this
   }
