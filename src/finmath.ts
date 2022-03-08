@@ -54,7 +54,22 @@ export class FinMath {
     return this
   }
 
+  /**
+   * Returns the result of operations.
+   * The default value will be returned when operations never called.
+   *
+   * @returns Result of arithmetical operations
+   */
   result(): number {
     return this.leftOperand
+  }
+
+  /**
+   * Returns a result of operations as number with string representation.
+   *
+   * @returns Result of arithmetical operations
+   */
+  resultAsString(): string {
+    return this.leftOperand.toString()
   }
 }
