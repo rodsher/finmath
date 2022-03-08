@@ -10,18 +10,21 @@
 /* tslint:disable:unified-signatures */
 
 import { ArgumentIsGreaterThanMaxError, ArgumentIsLessThanMinError } from './exceptions'
+import { NumberPrecision } from './number-precision'
 
-export class Math {
+export class FinMath {
   private leftOperand: number
   private rightOperand!: number
+  private precision!: NumberPrecision
 
   constructor()
   constructor(num: number)
   constructor(num?: number) {
     this.leftOperand = num ?? 0
+    this.precision = new NumberPrecision()
   }
 
-  static fromNumber(num: number): Math {
+  static fromNumber(num: number): FinMath {
     if (num > Number.MAX_SAFE_INTEGER) {
       throw new ArgumentIsGreaterThanMaxError(num)
     }
@@ -30,7 +33,7 @@ export class Math {
       throw new ArgumentIsLessThanMinError(num)
     }
 
-    return new Math(num)
+    return new FinMath(num)
   }
 
   // static fromString(num: string): Finmath
@@ -48,14 +51,34 @@ export class Math {
   // trunc()
   // toString()
   // toPrecision()
-  // result()
 
-  // add() {}
+  add(num: number): FinMath
+  add(num: string): FinMath
+  add(num: number | string): FinMath {
+    this.rightOperand = Number(num)
+
+    const [left, right, precision] = this.precision.setSamePrecision(
+      this.leftOperand,
+      this.rightOperand
+    )
+    const l = Number(left) * 10 ** precision
+    const r = Number(right) * 10 ** precision
+
+    this.leftOperand = Number(BigInt(l) + BigInt(r)) / 10 ** precision
+
+    return this
+  }
+
   // sub()
   // mul()
   // div()
 
+  result(): number {
+    return this.leftOperand
+  }
+
   // classes:
   // - NumberPrecision
   // - NumberValidator
+  // - NumberFormatter (padWithZero)
 }
