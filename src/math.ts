@@ -4,9 +4,7 @@
  * @fileoverview
  */
 
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
-
+/* Linter rule disabled because it does not allow methods overloading */
 /* tslint:disable:unified-signatures */
 
 import { ArgumentIsGreaterThanMaxError, ArgumentIsLessThanMinError } from './exceptions'
