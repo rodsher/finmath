@@ -1,46 +1,51 @@
-import { diff } from './utilities'
+import { InvalidNumberError } from './exceptions'
 
 export class NumberPrecision {
   private integerRegexp = /^(-|\+)?\d+$/
+  private decimalRegexp = /^(-|\+)?(\d+)\.(\d+)$/
 
-  // TODO: Add validation for int or decimal
   /**
    * Get precision of number using Regular Expression.
    * The method can work with numbers and string representation of numbers.
    *
    * @example
-   * // Example with number.
-   * const precision = new NumberPrecision().getPrecision(1.875) // 3
+   * // Examples with number and string
+   * const precision = new NumberPrecision().getPrecision(1.87) // 2
+   * const precision = new NumberPrecision().getPrecision('425.7125') // 4
    *
-   * // Example with string representation of number.
-   * const precision = new NumberPrecision().getPrecision('425.7525') // 4
-   *
+   * @throws {InvalidNumberError} The argument must be a valid number or string that can be converted to number.
    * @param num Number or string with a numeric value
    * @returns Precision of given number
    */
-  public getPrecision(num: number | string): number {
-    if (this.integerRegexp.test(num.toString())) {
+  public getPrecision(num: number | string): number | never {
+    const numAsString = num.toString()
+
+    if (this.integerRegexp.test(numAsString)) {
       return 0
     }
 
-    return num.toString().split(`.`)[1].length
+    if (this.decimalRegexp.test(numAsString)) {
+      const [_wholePart, fractionalPart] = numAsString.split(`.`)
+
+      return fractionalPart.length
+    }
+
+    throw new InvalidNumberError(num)
   }
 
-  // TODO: Refactor naming and add JSDoc
-  public setSamePrecision(x: number, y: number): [string, string, number] {
-    const precisionX = this.getPrecision(x)
-    const precisionY = this.getPrecision(y)
-    const precisionDiff = diff(precisionX, precisionY)
+  public max(firstOperand: number, secondOperand: number): number {
+    const firstOperandPrecision = this.getPrecision(firstOperand)
+    const secondOperandPrecision = this.getPrecision(secondOperand)
 
-    if (precisionX == precisionY) {
-      return [x.toString(), y.toString(), precisionX]
+    if (firstOperandPrecision === secondOperandPrecision) {
+      return firstOperandPrecision
     }
 
-    if (precisionX > precisionY) {
-      return [x.toString(), this.padWithZeros(y, precisionDiff), precisionX]
+    if (firstOperandPrecision > secondOperandPrecision) {
+      return firstOperandPrecision
     }
 
-    return [this.padWithZeros(x, precisionDiff), y.toString(), precisionY]
+    return secondOperandPrecision
   }
 
   // TODO: Refactor to a separate class
