@@ -34,13 +34,11 @@ export function diff(x: number, y: number): number {
 /**
  * floatToBigInt converts a float to BigInt using multiplication.
  *
- * # Examples
- *
- * ```ts
+ * @examples
+ * // Examples:
  * floatToBigInt(0.3, 10) // 3n
  * floatToBigInt(0.25, 100) // 25n
  * floatToBigInt(0.00005, 10 ** 8) // 5000n
- * ```
  *
  * @param num
  * @param multiplier
