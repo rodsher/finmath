@@ -103,16 +103,28 @@ describe('NumberPrecision', () => {
         }
       )
     })
+
+    describe('validation', () => {
+      it('should throw exception when given argument is not a number', () => {
+        expect(() => precision.getPrecision('text')).toThrowError(
+          'Given argument text is not a valid integer or decimal'
+        )
+      })
+
+      it('should pass validation when given arguments is a valid number', () => {})
+
+      it('should pass validation when given arguments is a valid string', () => {})
+    })
   })
 
-  describe('setSamePrecision', () => {
-    it('should return two operands with a same precision that earlier have a different precision', () => {
-      expect(precision.setSamePrecision(1.5, 2.175)).toEqual(['1.500', '2.175', 3])
-      expect(precision.setSamePrecision(1.00005025, 2.0)).toEqual(['1.00005025', '2.00000000', 8])
+  describe('max', () => {
+    it('should return right max precision when both numbers have a different precision', () => {
+      expect(precision.max(1.5, 2.175)).toBe(3)
+      expect(precision.max(1.00005025, 2.0)).toBe(8)
     })
 
-    it('should return two operands with a same precision that earlier have a same precision', () => {
-      expect(precision.setSamePrecision(1.125, 2.125)).toEqual(['1.125', '2.125', 3])
+    it('should return right max precision when both numbers have a same precision', () => {
+      expect(precision.max(1.125, 2.125)).toBe(3)
     })
   })
 
