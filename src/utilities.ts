@@ -34,7 +34,7 @@ export function diff(x: number, y: number): number {
 /**
  * floatToBigInt converts a float to BigInt using multiplication.
  *
- * @examples
+ * @example
  * // Examples:
  * floatToBigInt(0.3, 10) // 3n
  * floatToBigInt(0.25, 100) // 25n
