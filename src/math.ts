@@ -23,6 +23,7 @@ export class FinMath {
     this.precision = new NumberPrecision()
   }
 
+  // TODO: Add JSDoc
   static fromNumber(num: number): FinMath {
     if (num > Number.MAX_SAFE_INTEGER) {
       throw new ArgumentIsGreaterThanMaxError(num)
@@ -42,18 +43,21 @@ export class FinMath {
   // - mul
   // - div
 
+  // TODO: Add JSDoc
   setLeftOperand(num: number | string): FinMath {
     this.leftOperand = Number(num)
 
     return this
   }
 
+  // TODO: Add JSDoc
   setRightOperand(num: number | string): FinMath {
     this.rightOperand = Number(num)
 
     return this
   }
 
+  // TODO: Add JSDoc
   add(num: number): FinMath
   add(num: string): FinMath
   add(num: number | string): FinMath {
@@ -69,6 +73,23 @@ export class FinMath {
     return this.setLeftOperand(result)
   }
 
+  // TODO: Add JSDoc
+  sub(num: number): FinMath
+  sub(num: string): FinMath
+  sub(num: number | string): FinMath {
+    this.setRightOperand(num)
+
+    const maxPrecision = this.precision.max(this.leftOperand, this.rightOperand)
+    const multiplier = 10 ** maxPrecision
+    const leftOperand = floatToBigInt(this.leftOperand, multiplier)
+    const rightOperand = floatToBigInt(this.rightOperand, multiplier)
+
+    const result = Number(leftOperand - rightOperand) / multiplier
+
+    return this.setLeftOperand(result)
+  }
+
+  // TODO: Add JSDoc
   mul(num: number): FinMath
   mul(num: string): FinMath
   mul(num: number | string): FinMath {
