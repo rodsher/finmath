@@ -1,4 +1,4 @@
-import { InvalidBigIntMultiplierError } from './exceptions'
+import { FLOAT_REGEXP, INTEGER_REGEXP } from './constants'
 
 /**
  * diff computes a positive difference between two numbers.
@@ -42,82 +42,46 @@ export function diff(x: number, y: number): number {
 }
 
 /**
- * floatToBigInt converts a float to BigInt using multiplication.
+ * isInteger is a helper function to check integer numbers.
  *
  * @example
  * // Examples:
- * floatToBigInt(0.3, 10) // 3n
- * floatToBigInt(0.25, 100) // 25n
- * floatToBigInt(0.00005, 10 ** 8) // 5000n
+ * isInteger(100) // true
+ * isInteger(+100) // true
+ * isInteger(-100) // true
+ * isInteger(100n) // true
+ * isInteger('100') // true
+ * isInteger('100.00') // false
  *
- * @param num
- * @param multiplier
- * @returns BigInt
+ * @param num Number or string with a numeric value
+ * @returns Result
  */
-export function floatToBigInt(num: number, multiplier: number): bigint {
-  if (num === 0) {
-    return BigInt(0)
+export function isInteger(num: number | bigint | string): boolean {
+  if (INTEGER_REGEXP.test(num.toString())) {
+    return true
   }
 
-  if (multiplier < 1) {
-    throw new InvalidBigIntMultiplierError(multiplier)
-  }
-
-  const value = num * multiplier
-
-  // Why we using Math.round() here?
-  //
-  // For example, package user called function with arguments decimalToBigInt(0.00007, 7).
-  // The multiplier will be 10^7 = 10000000.
-  // Multiplication will return 0.00007 * 10000000 = 699.9999999999999.
-  // We dont want to lose precision and using the Math.round() method to round a float to the nearest integer.
-  const roundedToNearestInteger = Math.round(value)
-
-  return BigInt(roundedToNearestInteger)
+  return false
 }
 
-export function scientificNotationToFloat(num: number | string) {
-  const nsign = Math.sign(num as number)
-  //remove the sign
-  num = Math.abs(num as number)
-
-  //if the number is in scientific notation remove it
-  if (/\d+\.?\d*e[\+\-]*\d+/i.test(num.toString())) {
-    var zero = '0',
-      parts = String(num)
-        .toLowerCase()
-        .split('e'), //split into coeff and exponent
-      e = parts.pop(), //store the exponential part
-      //@ts-ignore
-      l = Math.abs(e), //get the number of zeros
-      //@ts-ignore
-      sign = e / l,
-      coeff_array = parts[0].split('.')
-    if (sign === -1) {
-      l = l - coeff_array[0].length
-      if (l < 0) {
-        //@ts-ignore
-        num =
-          coeff_array[0].slice(0, l) +
-          '.' +
-          coeff_array[0].slice(l) +
-          (coeff_array.length === 2 ? coeff_array[1] : '')
-      } else {
-        //@ts-ignore
-        num = zero + '.' + new Array(l + 1).join(zero) + coeff_array.join('')
-      }
-    } else {
-      var dec = coeff_array[1]
-      if (dec) l = l - dec.length
-      if (l < 0) {
-        //@ts-ignore
-        num = coeff_array[0] + dec.slice(0, l) + '.' + dec.slice(l)
-      } else {
-        //@ts-ignore
-        num = coeff_array.join('') + new Array(l + 1).join(zero)
-      }
-    }
+/**
+ * isFloat is a helper function to check float numbers.
+ *
+ * @example
+ * // Examples:
+ * isFloat(100.01) // true
+ * isFloat('100.01') // true
+ * isFloat('100.00000001') // true
+ * isFloat('100.00000000000001') // true
+ * isFloat(100) // false
+ *
+ * @param num Number or string with a numeric value
+ * @returns Result
+ */
+export function isFloat(num: number | bigint | string): boolean {
+  if (FLOAT_REGEXP.test(num.toString())) {
+    return true
   }
 
-  return nsign < 0 ? '-' + num : num.toString()
+  return false
 }
