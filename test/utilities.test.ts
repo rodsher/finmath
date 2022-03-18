@@ -1,4 +1,4 @@
-import { diff, isFloat, isInteger } from '../src/utilities'
+import { diff, isFloat, isInteger, isScientificFloat } from '../src/utilities'
 
 describe('utilities', () => {
   describe('diff', () => {
@@ -65,6 +65,19 @@ describe('utilities', () => {
       ['100.00000000000001', true]
     ])('isFloat(%d) === %s', (input, expected) => {
       expect(isFloat(input)).toBe(expected)
+    })
+  })
+
+  describe('isScientificFloat', () => {
+    it.each([
+      ['2.5e25', true],
+      ['-1.123e-10', true],
+      ['-1e-3', true],
+      ['-1.2e-', true],
+      ['100', false],
+      ['100.5', false]
+    ])('isScientificFloat(%d) === %s', (input, expected) => {
+      expect(isScientificFloat(input)).toBe(expected)
     })
   })
 })

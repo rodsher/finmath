@@ -1,4 +1,4 @@
-import { FLOAT_REGEXP, INTEGER_REGEXP } from './constants'
+import { FLOAT_REGEXP, INTEGER_REGEXP, SCIENTIFIC_NOTATION_REGEXP } from './constants'
 
 /**
  * diff computes a positive difference between two numbers.
@@ -80,6 +80,27 @@ export function isInteger(num: number | bigint | string): boolean {
  */
 export function isFloat(num: number | bigint | string): boolean {
   if (FLOAT_REGEXP.test(num.toString())) {
+    return true
+  }
+
+  return false
+}
+
+/**
+ * isScientificFloat is a helper function to check float numbers in scientific notation.
+ *
+ * @example
+ * // Examples:
+ * isScientificFloat('2.5e25') // true
+ * isScientificFloat('-1.123e-10') // true
+ * isScientificFloat('-1e-3') // true
+ * isScientificFloat('-1.2e-2') // true
+ *
+ * @param num Number or string with a numeric value
+ * @returns Result
+ */
+export function isScientificFloat(num: number | bigint | string): boolean {
+  if (SCIENTIFIC_NOTATION_REGEXP.test(num.toString())) {
     return true
   }
 
