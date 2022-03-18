@@ -1,27 +1,31 @@
+import { ZERO_PRECISION } from './constants'
+import { numberToString } from './convert'
 import { InvalidNumberError } from './exceptions'
 
 export class NumberPrecision {
   private integerRegexp = /^(-|\+)?\d+$/
   private decimalRegexp = /^(-|\+)?(\d+)\.(\d+)$/
+  private scientificNotationRegexp = /\d+\.?\d*e[\+\-]*\d+/i
 
   /**
-   * Get precision of number using Regular Expression.
+   * Compute a precision of a given number.
    * The method can work with numbers and string representation of numbers.
    *
    * @example
    * // Examples with number and string
-   * const precision = new NumberPrecision().getPrecision(1.87) // 2
-   * const precision = new NumberPrecision().getPrecision('425.7125') // 4
+   * const precision = new NumberPrecision().compute(1.87) // 2
+   * const precision = new NumberPrecision().compute(500) // 0
+   * const precision = new NumberPrecision().compute('425.7125') // 4
    *
-   * @throws {InvalidNumberError} The argument must be a valid number or string that can be converted to number.
+   * @throws {InvalidNumberError} The argument must be a valid number or string that can be converted to number
    * @param num Number or string with a numeric value
    * @returns Precision of given number
    */
-  public getPrecision(num: number | string): number | never {
-    const numAsString = num.toString()
+  public compute(num: number | string): number | never {
+    const numAsString = numberToString(num)
 
     if (this.integerRegexp.test(numAsString)) {
-      return 0
+      return ZERO_PRECISION
     }
 
     if (this.decimalRegexp.test(numAsString)) {
@@ -33,9 +37,17 @@ export class NumberPrecision {
     throw new InvalidNumberError(num)
   }
 
+  /**
+   * Select maximum precision of given arguments.
+   *
+   * @throws {InvalidNumberError} The argument must be a valid number or string that can be converted to number
+   * @param firstOperand Number or string with a numeric value
+   * @param secondOperand Number or string with a numeric value
+   * @returns Max precision
+   */
   public max(firstOperand: number, secondOperand: number): number {
-    const firstOperandPrecision = this.getPrecision(firstOperand)
-    const secondOperandPrecision = this.getPrecision(secondOperand)
+    const firstOperandPrecision = this.compute(firstOperand)
+    const secondOperandPrecision = this.compute(secondOperand)
 
     if (firstOperandPrecision === secondOperandPrecision) {
       return firstOperandPrecision
@@ -46,20 +58,5 @@ export class NumberPrecision {
     }
 
     return secondOperandPrecision
-  }
-
-  // TODO: Refactor to a separate class
-  public padWithZeros(num: number, precision: number): string {
-    let n: string = num.toString()
-
-    if (this.integerRegexp.test(n) && precision > 0) {
-      n += '.'
-    }
-
-    for (let index = 0; index < precision; index++) {
-      n += '0'
-    }
-
-    return n
   }
 }

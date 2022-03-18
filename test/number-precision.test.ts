@@ -51,7 +51,7 @@ describe('NumberPrecision', () => {
       it.each([...positiveNumbers, ...negativeNumbers])(
         'should return correct precision when given number is a decimal with a decimal place, num: %s, precision: %d',
         (input, expected) => {
-          expect(precision.getPrecision(input)).toBe(expected)
+          expect(precision.compute(input)).toBe(expected)
         }
       )
     })
@@ -93,20 +93,29 @@ describe('NumberPrecision', () => {
         ['100.000000', 6],
         ['100.0000000', 7],
         ['100.00000000', 8]
+
+        // [('3.2e23', 23)],
+        // ['-4.70e+9', 9],
+        // ['-.2E-4', 5],
+        // ['-7.6603', 4]
+
+        // +0003   // leading zeros
+        // 37.e88  // dot before the e
       ]
       const negativeNumbers = positiveNumbers.map(([s, precision]) => [`-${s}`, precision])
+      const positiveNumbersWithSign = positiveNumbers.map(([s, precision]) => [`+${s}`, precision])
 
-      it.each([...positiveNumbers, ...negativeNumbers])(
+      it.each([...positiveNumbers, ...negativeNumbers, ...positiveNumbersWithSign])(
         'should return correct precision when given string is a decimal with a decimal place, num: %s, precision: %d',
         (input, expected) => {
-          expect(precision.getPrecision(input)).toBe(expected)
+          expect(precision.compute(input)).toBe(expected)
         }
       )
     })
 
     describe('validation', () => {
       it('should throw exception when given argument is not a number', () => {
-        expect(() => precision.getPrecision('text')).toThrowError(
+        expect(() => precision.compute('text')).toThrowError(
           'Given argument text is not a valid integer or decimal'
         )
       })
@@ -125,29 +134,6 @@ describe('NumberPrecision', () => {
 
     it('should return right max precision when both numbers have a same precision', () => {
       expect(precision.max(1.125, 2.125)).toBe(3)
-    })
-  })
-
-  describe('padWithZeros', () => {
-    it.each([
-      [['100', 0], '100'],
-      [['100', 1], '100.0'],
-      [['100', 2], '100.00'],
-      [['100', 3], '100.000'],
-      [['100', 4], '100.0000'],
-      [['100', 5], '100.00000'],
-      [['100', 6], '100.000000'],
-      [['100', 7], '100.0000000'],
-      [['100', 8], '100.00000000'],
-      [['100', 9], '100.000000000'],
-      [['100', 10], '100.0000000000'],
-      [['100', 11], '100.00000000000'],
-      [['100', 12], '100.000000000000'],
-      [['100', 13], '100.0000000000000'],
-      [['100', 14], '100.00000000000000'],
-      [['100', 15], '100.000000000000000']
-    ])('padWithZero(%s, %s)', ([input, inputPrecision], expected) => {
-      expect(precision.padWithZeros(input, inputPrecision)).toBe(expected)
     })
   })
 })
