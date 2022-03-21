@@ -1,14 +1,28 @@
 import { InvalidBigIntMultiplierError } from './exceptions'
-import { SCIENTIFIC_NOTATION_REGEXP } from './constants'
+import { isScientificFloat } from './utilities'
 
-export function numberToString(num: number | bigint | string) {
-  const numberAsString = num.toString()
+/**
+ * numberToString converts number or string representation of number in different format
+ * to a unified string with a fractional part or an integer.
+ *
+ * @example
+ * // Examples:
+ * numberToString(100) // '100'
+ * numberToString(100.00000001) // '100.00000001'
+ * numberToString(1e-7) // '0.0000001'
+ *
+ * @private
+ * @param num
+ * @returns Result of convertation
+ */
+export function numberToString(num: number | bigint | string): string {
+  const numAsString = num.toString()
 
-  if (SCIENTIFIC_NOTATION_REGEXP.test(numberAsString)) {
-    return scientificFloatToString(numberAsString)
+  if (isScientificFloat(numAsString)) {
+    return scientificFloatToString(numAsString)
   }
 
-  return numberAsString
+  return numAsString
 }
 
 /**
@@ -20,6 +34,7 @@ export function numberToString(num: number | bigint | string) {
  * floatToBigInt(0.25, 100) // 25n
  * floatToBigInt(0.00005, 10 ** 8) // 5000n
  *
+ * @private
  * @param num
  * @param multiplier
  * @returns BigInt
@@ -46,49 +61,107 @@ export function floatToBigInt(num: number, multiplier: number): bigint {
   return BigInt(roundedToNearestInteger)
 }
 
-// TODO: Refactor
 export function scientificFloatToString(num: number | string) {
-  const nsign = Math.sign(num as number)
-  //remove the sign
-  num = Math.abs(num as number)
+  const nSign = Math.sign(Number(num))
+  const n = Math.abs(Number(num))
 
-  //if the number is in scientific notation remove it
-  if (/\d+\.?\d*e[\+\-]*\d+/i.test(num.toString())) {
-    var zero = '0',
-      parts = String(num)
-        .toLowerCase()
-        .split('e'), //split into coeff and exponent
-      e = parts.pop(), //store the exponential part
-      //@ts-ignore
-      l = Math.abs(e), //get the number of zeros
-      //@ts-ignore
-      sign = e / l,
-      coeff_array = parts[0].split('.')
-    if (sign === -1) {
-      l = l - coeff_array[0].length
-      if (l < 0) {
-        //@ts-ignore
-        num =
-          coeff_array[0].slice(0, l) +
-          '.' +
-          coeff_array[0].slice(l) +
-          (coeff_array.length === 2 ? coeff_array[1] : '')
+  let numAsString: string = ''
+
+  if (isScientificFloat(n.toString())) {
+    const zeroChar = '0'
+    const [coeff, exp] = splitCoeffAndExp(n)
+    const coeffs = splitCoeff(coeff)
+    const [whole, fractional] = coeffs
+    const exponentialPart = Number(exp)
+
+    let numberOfZeros = Math.abs(exponentialPart)
+    let sign = exponentialPart / numberOfZeros
+
+    if (isNegative(sign)) {
+      numberOfZeros = numberOfZeros - whole.length
+
+      if (numberOfZeros < 0) {
+        numAsString = concatNumberWithoutZeros(whole, numberOfZeros, coeffs)
       } else {
-        //@ts-ignore
-        num = zero + '.' + new Array(l + 1).join(zero) + coeff_array.join('')
+        numAsString = concatNumberWithZeros(zeroChar, numberOfZeros, coeffs)
       }
     } else {
-      var dec = coeff_array[1]
-      if (dec) l = l - dec.length
-      if (l < 0) {
-        //@ts-ignore
-        num = coeff_array[0] + dec.slice(0, l) + '.' + dec.slice(l)
+      if (fractional) {
+        numberOfZeros = numberOfZeros - fractional.length
+      }
+
+      if (numberOfZeros < 0) {
+        numAsString = concatWithoutZerosWhenPositive(coeffs, fractional, numberOfZeros)
       } else {
-        //@ts-ignore
-        num = coeff_array.join('') + new Array(l + 1).join(zero)
+        numAsString = concatWithZerosWhenPositive(coeffs, numberOfZeros, zeroChar)
       }
     }
   }
 
-  return nsign < 0 ? '-' + num : num.toString()
+  return nSign < 0 ? `-${numAsString}` : numAsString
+}
+
+/**
+ * splitCoeffAndExp returns coefficient and exponential parts.
+ *
+ * @example
+ * // Example:
+ * splitToParts(-1.123e-10) // [ '-1.123', '-10' ]
+ *
+ * @private
+ * @param num Number in a scientific notation
+ * @returns The whole and the fractional part
+ */
+export const splitCoeffAndExp = (num: number): string[] =>
+  num
+    .toString()
+    .toLowerCase()
+    .split('e')
+
+/**
+ * splitCoeff returns whole and fractional parts.
+ *
+ * @private
+ * @param num Float number
+ * @returns The whole and the fractional part
+ */
+export const splitCoeff = (num: string) => num.split('.')
+
+export const isNegative = (n: number) => n < 0
+
+function concatWithoutZerosWhenPositive(
+  coeffs: string[],
+  fractional: string,
+  numberOfZeros: number
+): string {
+  return coeffs[0] + fractional.slice(0, numberOfZeros) + '.' + fractional.slice(numberOfZeros)
+}
+
+function concatNumberWithZeros(
+  zeroChar: string,
+  numberOfZeros: number,
+  floatCoefficients: string[]
+): string {
+  return zeroChar + '.' + new Array(numberOfZeros + 1).join(zeroChar) + floatCoefficients.join('')
+}
+
+function concatNumberWithoutZeros(
+  whole: string,
+  numberOfZeros: number,
+  floatCoefficients: string[]
+): string {
+  return (
+    whole.slice(0, numberOfZeros) +
+    '.' +
+    floatCoefficients[0].slice(numberOfZeros) +
+    (floatCoefficients.length === 2 ? floatCoefficients[1] : '')
+  )
+}
+
+function concatWithZerosWhenPositive(
+  coeffs: string[],
+  numberOfZeros: number,
+  zeroChar: string
+): string {
+  return coeffs.join('') + new Array(numberOfZeros + 1).join(zeroChar)
 }
