@@ -57,11 +57,7 @@ export function diff(x: number, y: number): number {
  * @returns Result
  */
 export function isInteger(num: number | bigint | string): boolean {
-  if (INTEGER_REGEXP.test(num.toString())) {
-    return true
-  }
-
-  return false
+  return INTEGER_REGEXP.test(num.toString())
 }
 
 /**
@@ -79,11 +75,7 @@ export function isInteger(num: number | bigint | string): boolean {
  * @returns Result
  */
 export function isFloat(num: number | bigint | string): boolean {
-  if (FLOAT_REGEXP.test(num.toString())) {
-    return true
-  }
-
-  return false
+  return FLOAT_REGEXP.test(num.toString())
 }
 
 /**
@@ -100,9 +92,5 @@ export function isFloat(num: number | bigint | string): boolean {
  * @returns Result
  */
 export function isScientificFloat(num: number | bigint | string): boolean {
-  if (SCIENTIFIC_NOTATION_REGEXP.test(num.toString())) {
-    return true
-  }
-
-  return false
+  return SCIENTIFIC_NOTATION_REGEXP.test(num.toString())
 }

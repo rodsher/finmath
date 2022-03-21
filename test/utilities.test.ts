@@ -73,7 +73,7 @@ describe('utilities', () => {
       ['2.5e25', true],
       ['-1.123e-10', true],
       ['-1e-3', true],
-      ['-1.2e-', true],
+      ['-1.2e-6', true],
       ['100', false],
       ['100.5', false]
     ])('isScientificFloat(%d) === %s', (input, expected) => {
