@@ -7,9 +7,9 @@
 /* Linter rule disabled because it does not allow methods overloading */
 /* tslint:disable:unified-signatures */
 
+import { floatToBigInt } from './convert'
 import { ArgumentIsGreaterThanMaxError, ArgumentIsLessThanMinError } from './exceptions'
 import { NumberPrecision } from './number-precision'
-import { floatToBigInt } from './utilities'
 
 export class FinMath {
   private leftOperand: number
